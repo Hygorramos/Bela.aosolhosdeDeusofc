@@ -368,8 +368,17 @@ section{position:relative}
 .local .sec-head .flor{background:var(--ouro-claro)}
 .local .sec-head .flor::before{background:var(--vinho-esc);color:var(--ouro-claro)}
 .local-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,60px);align-items:stretch}
-.map-frame{border-radius:22px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);min-height:360px;border:1px solid rgba(232,213,168,.2)}
-.map-frame iframe{width:100%;height:100%;min-height:360px;border:0;filter:saturate(1.05)}
+.map-frame{position:relative;border-radius:22px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);min-height:360px;border:1px solid rgba(232,213,168,.2);background:#e8e4df}
+.map-frame::before{content:'Carregando mapa...';position:absolute;inset:0;display:grid;place-items:center;color:#9a8;font-size:.85rem;font-style:italic;z-index:0}
+.map-frame iframe{position:relative;width:100%;height:100%;min-height:360px;border:0;display:block;z-index:1}
+.map-open{
+  position:absolute;right:14px;bottom:14px;z-index:5;
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 16px;border-radius:40px;font-size:.78rem;font-weight:500;letter-spacing:.02em;
+  background:var(--vinho);color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.3);
+  transition:transform .25s, background .25s;
+}
+.map-open:hover{background:var(--vinho-esc);transform:translateY(-2px)}
 .local-info{display:flex;flex-direction:column;justify-content:center}
 .local-info h3{font-size:2rem;color:var(--ouro-claro);font-weight:500;margin-bottom:20px}
 .local-item{display:flex;gap:16px;margin-bottom:24px;align-items:flex-start}
@@ -591,8 +600,9 @@ footer{background:var(--vinho-prof);color:#fff;padding:64px 24px 30px;text-align
     <div class="local-grid">
       <div class="map-frame reveal">
         <iframe
-          src="https://www.google.com/maps?q=-2.5452687740325928,-44.21060562133789&z=17&hl=pt-BR&output=embed"
-          loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Localização Bela aos Olhos de Deus"></iframe>
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-44.21510%2C-2.54827%2C-44.20611%2C-2.54227&layer=mapnik&marker=-2.5452687740325928%2C-44.21060562133789"
+          loading="lazy" title="Localização Bela aos Olhos de Deus"></iframe>
+        <a class="map-open" href="https://www.google.com/maps?q=-2.5452687740325928,-44.21060562133789&z=17&hl=pt-BR" target="_blank" rel="noopener">📍 Abrir no Google Maps</a>
       </div>
       <div class="local-info reveal">
         <h3>Bela — Espaço de Beleza</h3>
@@ -664,12 +674,13 @@ const SERVICOS = [
   {nome:"Design de Sobrancelha", desc:"Realce o olhar com o formato ideal."},
   {nome:"Cílios Fio a Fio", desc:"Olhar marcante com efeito natural."},
   {nome:"Maquiagem", desc:"Make para eventos e momentos especiais."},
-  {nome:"Manicure e Pedicure", desc:"Mãos e pés bem cuidados e impecáveis."}
+  {nome:"Manicure e Pedicure", desc:"Mãos e pés bem cuidados e impecáveis."},
+  {nome:"Outros serviços", desc:"Não achou o que procura? Fale com a gente e combinamos seu atendimento.", soAgenda:true}
 ];
 
 // render cards
 const grid = document.getElementById('procGrid');
-SERVICOS.forEach((s,i)=>{
+SERVICOS.filter(s=>!s.soAgenda).forEach((s,i)=>{
   const c = document.createElement('div');
   c.className = 'proc-card reveal';
   c.innerHTML = `<span class="n">${String(i+1).padStart(2,'0')}</span><h3>${s.nome}</h3><p>${s.desc}</p>`;
